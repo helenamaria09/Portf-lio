@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>MARIA HELENA // CHROME DREAMS — Immersive Portfolio 2026</title>
+  <meta name="description"
+    content="Portfólio experimental e cinematográfico 3D de Maria Helena. Uma experiência surrealista em metal líquido, cromo e vidro translúcido. Chrome Dreams — A Digital Experience.">
+  <meta name="author" content="Maria Helena">
+  <meta property="og:title" content="MARIA HELENA // CHROME DREAMS">
+  <meta property="og:description" content="Uma experiência digital 3D surrealista e cinematográfica.">
+  <meta name="theme-color" content="#08070B">
+
+  <!-- Favicon com Emoji (Ícone da Aba) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+
+  <!-- Tipografia Editorial -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800;900&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="is-loading">
+
+  <!-- LOADING SCREEN -->
+  <div class="cd-loading" id="cdLoading" aria-hidden="true" role="progressbar" aria-label="Carregando experiência">
+    <div class="cd-loading__inner">
+      <div class="cd-loading__beacon" id="cdBeacon"></div>
+      <div class="cd-loading__brand">CHROME DREAMS</div>
+      <div class="cd-loading__sub">INICIALIZANDO EXPERIÊNCIA</div>
+      <div class="cd-loading__track">
+        <div class="cd-loading__fill" id="cdLoadFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANVAS WEBGL -->
+  <canvas id="cd-canvas" aria-hidden="true"></canvas>
+
+  <!-- ATMOSPHERE OVERLAYS -->
+  <div class="cd-grain" aria-hidden="true"></div>
+  <div class="cd-vignette" aria-hidden="true"></div>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cd-cursor__dot" id="cdCursorDot" aria-hidden="true"></div>
+  <div class="cd-cursor__ring" id="cdCursorRing" aria-hidden="true">
+    <span class="cd-cursor__label" id="cdCursorLabel"></span>
+  </div>
+
+  <!-- NO-WEBGL FALLBACK -->
+  <div class="cd-no-webgl" id="cdNoWebgl" role="alert" hidden>
+    <p>Seu navegador não suporta WebGL. A experiência 3D não está disponível, mas todo o conteúdo está acessível abaixo.
+    </p>
+  </div>
+
+  <!-- HUD SUPERIOR -->
+  <header class="cd-hud-top" id="cdHudTop">
+    <button class="cd-hud__brand" id="cdBtnHome" aria-label="Voltar para a introdução">
+      <span class="cd-hud__brand-spark" aria-hidden="true">+</span>
+      <span class="cd-hud__brand-name">MARIA HELENA</span>
+      <span class="cd-hud__brand-tag" aria-hidden="true">CHROME DREAMS</span>
+    </button>
+
+    <div class="cd-hud__progress" aria-live="polite" aria-atomic="true">
+      <div class="cd-hud__scene-tag" id="cdSceneTag">CENA 01 / 08 — INTRODUÇÃO</div>
+      <div class="cd-hud__bar" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1"
+        id="cdProgressBar">
+        <div class="cd-hud__bar-fill" id="cdBarFill"></div>
+      </div>
+    </div>
+
+    <div class="cd-hud__controls">
+      <button class="cd-hud__ctrl-btn" id="cdBtnAudio" aria-label="Ativar áudio ambiente" aria-pressed="false">
+        <span class="cd-hud__ctrl-text">ÁUDIO</span>
+      </button>
+      <button class="cd-hud__ctrl-btn" id="cdBtnMotion" aria-label="Reduzir movimento" aria-pressed="false">
+        <span class="cd-hud__ctrl-text">MOTION</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- HUD INFERIOR -->
+  <footer class="cd-hud-bot" id="cdHudBot">
+    <div class="cd-hud__coords" aria-label="Localização">
+      <span>CAMPINAS, SP — BRASIL</span>
+    </div>
+
+    <nav class="cd-nav" aria-label="Navegação entre cenas">
+      <button class="cd-nav__btn cd-nav__btn--prev" id="cdBtnPrev" aria-label="Cena anterior">ANTERIOR</button>
+
+      <div class="cd-nav__pills" role="tablist" aria-label="Selecionar cena">
+        <button class="cd-nav__pill cd-nav__pill--active" role="tab" data-scene="1" aria-selected="true"
+          aria-label="Cena 01">01</button>
+        <button class="cd-nav__pill" role="tab" data-scene="2" aria-selected="false" aria-label="Cena 02">02</button>
+        <button class="cd-nav__pill" role="tab" data-scene="3" aria-selected="false" aria-label="Cena 03">03</button>
+        <button class="cd-nav__pill" role="tab" data-scene="4" aria-selected="false" aria-label="Cena 04">04</button>
+        <button class="cd-nav__pill" role="tab" data-scene="5" aria-selected="false" aria-label="Cena 05">05</button>
+        <button class="cd-nav__pill" role="tab" data-scene="6" aria-selected="false" aria-label="Cena 06">06</button>
+        <button class="cd-nav__pill" role="tab" data-scene="7" aria-selected="false" aria-label="Cena 07">07</button>
+        <button class="cd-nav__pill" role="tab" data-scene="8" aria-selected="false" aria-label="Cena 08">08</button>
+      </div>
+
+      <button class="cd-nav__btn cd-nav__btn--next" id="cdBtnNext" aria-label="Próxima cena">PRÓXIMO</button>
+    </nav>
+
+    <div class="cd-hud__shortcuts" aria-label="Atalhos">
+      <span>1-8 · SETAS</span>
+    </div>
+  </footer>
+
+  <!-- MAIN STAGE -->
+  <main class="cd-stage" id="cdStage" aria-label="Experiência CHROME DREAMS">
+
+    <!-- CENA 01 - INTRO / HERO -->
+    <section class="cd-scene cd-scene--01 cd-scene--active" id="cd-scene-01" data-scene="1" data-scene-name="INTRODUÇÃO"
+      aria-label="Cena 01: Introdução" role="tabpanel">
+      <div class="cd-hero">
+        <div class="cd-hero__badge" aria-hidden="true">
+          <span class="cd-hero__badge-dot">*</span>
+          CHROME DREAMS — A DIGITAL EXPERIENCE — 2026
+        </div>
+        <div class="cd-hero__name" id="cdHeroName" role="button" tabindex="0"
+          aria-label="MARIA HELENA — Clique para entrar na experiência">
+          <div class="cd-hero__name-row" data-row="maria" aria-hidden="true">
+            <span>M</span><span>A</span><span>R</span><span>I</span><span>A</span>
+          </div>
+          <div class="cd-hero__name-row" data-row="helena" aria-hidden="true">
+            <span>H</span><span>E</span><span>L</span><span>E</span><span>N</span><span>A</span>
+          </div>
+          <div class="cd-hero__spark cd-hero__spark--1" aria-hidden="true"></div>
+          <div class="cd-hero__spark cd-hero__spark--2" aria-hidden="true"></div>
+          <div class="cd-hero__spark cd-hero__spark--3" aria-hidden="true"></div>
+        </div>
+        <div class="cd-hero__sub" aria-label="Creative Developer e Designer">
+          <span>Creative Developer</span>
+          <span class="cd-hero__sub-sep" aria-hidden="true">&amp;</span>
+          <span><em>Designer</em></span>
+        </div>
+        <p class="cd-hero__desc">Experiências interativas, 3D e tecnologia com propósito.</p>
+        <div class="cd-hero__cta">
+          <button class="cd-hero__enter hoverable" id="cdBtnEnter" aria-label="Entrar na experiência">
+            <span>ENTER THE EXPERIENCE</span>
+            <span class="cd-hero__enter-glyph" aria-hidden="true">*</span>
+          </button>
+          <p class="cd-hero__hint" aria-hidden="true">SCROLL TO EXPLORE</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENA 02 - TRAVESSIA -->
+    <section class="cd-scene cd-scene--02" id="cd-scene-02" data-scene="2" data-scene-name="TRAVESSIA"
+      aria-label="Cena 02: Travessia" role="tabpanel" aria-hidden="true">
+      <div class="cd-transition-panel">
+        <span class="cd-panel__meta" aria-hidden="true">[ ATRAVESSANDO O PORTAL ]</span>
+        <h2 class="cd-panel__title">TRAVESSIA<br><em>CROMADA</em></h2>
+        <p class="cd-panel__body">
+          A câmera penetra entre as formas esculturais, cruzando a barreira de reflexos e metal líquido que separa o
+          limiar do universo interior.
+        </p>
+      </div>
+    </section>
+
+    <!-- CENA 03 - SOBRE MIM -->
+    <section class="cd-scene cd-scene--03" id="cd-scene-03" data-scene="3" data-scene-name="SOBRE MIM"
+      aria-label="Cena 03: Sobre Mim" role="tabpanel" aria-hidden="true">
+      <div class="cd-about">
+        <div class="cd-about__editorial">
+          <div class="cd-panel__meta" aria-hidden="true">[ CENA 03 // IDENTIDADE E TRAJETÓRIA ]</div>
+          <h2 class="cd-panel__title cd-about__title">SOBRE MIM</h2>
+          <div class="cd-about__text">
+            <p class="cd-about__lead">
+              Olá! Sou <strong>Maria Helena</strong>, estudante do 2º ano do Ensino Médio integrado ao
+              <strong>Curso Técnico em Informática</strong>, no Colégio Raphael Di Santo.
+            </p>
+            <p>
+              Estou no início da minha jornada na tecnologia e gosto de transformar ideias em projetos digitais.
+              Tenho interesse em desenvolvimento web, experiências interativas e na conexão entre tecnologia e
+              comunicação.
+            </p>
+            <p>
+              Estou sempre buscando aprender coisas novas, experimentar possibilidades e desenvolver projetos
+              que unam criatividade e tecnologia.
+            </p>
+          </div>
+          <div class="cd-about__creds">
+            <div class="cd-cred">
+              <span class="cd-cred__label">FORMAÇÃO</span>
+              <strong class="cd-cred__val">Técnico em Informática</strong>
+              <small>Colégio Raphael Di Santo</small>
+            </div>
+            <div class="cd-cred">
+              <span class="cd-cred__label">INÍCIO DA JORNADA</span>
+              <strong class="cd-cred__val">Fevereiro de 2025</strong>
+              <small>Atualmente no 2º Ano</small>
+            </div>
+            <div class="cd-cred">
+              <span class="cd-cred__label">IDIOMAS</span>
+              <strong class="cd-cred__val">Inglês Fluente</strong>
+              <small>Espanhol Básico · Português Nativo</small>
+            </div>
+          </div>
+        </div>
+        <!-- FOTO — MARIA HELENA COM MOLDURA 3D ESCULPIDA -->
+        <div class="cd-about__portrait-wrap" data-parallax="true">
+          <!-- Backlight etéreo / Ambient Glow -->
+          <div class="cd-about__halo-glow" aria-hidden="true"></div>
+
+          <!-- Stage 3D interativo com perspectiva real -->
+          <div class="cd-about__portrait-stage" id="cdAboutPortrait" role="img"
+            aria-label="Retrato editorial de Maria Helena envolvido por moldura escultural de metal líquido 3D">
+
+            <!-- Plano 3A: Fotografia Original de Maria Helena -->
+            <div class="cd-about__photo-plate">
+              <img src="assets/eu.jpeg" alt="Maria Helena — Creative Developer" class="cd-about__photo" loading="lazy"
+                draggable="false" />
+              <div class="cd-about__photo-vignette" aria-hidden="true"></div>
+            </div>
+
+            <!-- Plano 3B: Moldura 3D Cromada com Sombras Reais e Bordas Esculturais -->
+            <div class="cd-about__frame-layer" aria-hidden="true">
+              <img src="assets/moldura-3d.png" alt="" class="cd-about__frame-img" draggable="false" />
+              <div class="cd-about__frame-glimmer" aria-hidden="true"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENA 04 - PROJETOS -->
+    <section class="cd-scene cd-scene--04" id="cd-scene-04" data-scene="4" data-scene-name="PROJETOS"
+      aria-label="Cena 04: Projetos Selecionados" role="tabpanel" aria-hidden="true">
+      <div class="cd-gallery">
+        <div class="cd-gallery__header">
+          <div class="cd-panel__meta" aria-hidden="true">[ CENA 04 // GALERIA DIGITAL EXPERIMENTAL ]</div>
+          <h2 class="cd-panel__title">PROJETOS<br><em>SELECIONADOS</em></h2>
+        </div>
+
+        <!-- LISTA VERTICAL INTERATIVA DE PROJETOS -->
+        <div class="cd-proj-list" id="cdProjList" role="list">
+
+          <article class="cd-proj-item hoverable" role="listitem" tabindex="0" data-index="0" data-slug="briar-u"
+            data-url="https://briar-u.vercel.app/" data-img="assets/projetos/briar-u.webp"
+            aria-label="Ver detalhes do Projeto 01: Briar U Hockey">
+            <div class="cd-proj-item__inner">
+              <span class="cd-proj-item__num">01</span>
+              <div class="cd-proj-item__info">
+                <h3 class="cd-proj-item__name">Briar U <em>Hockey</em></h3>
+                <p class="cd-proj-item__desc">Canvas 2D · Física de colisão · Placar dinâmico</p>
+              </div>
+              <div class="cd-proj-item__tags">
+                <span>JS</span><span>Canvas</span><span>CSS3</span>
+              </div>
+              <span class="cd-proj-item__cta" aria-hidden="true">↗</span>
+            </div>
+          </article>
+
+          <article class="cd-proj-item hoverable" role="listitem" tabindex="0" data-index="1" data-slug="projeto-js"
+            data-url="https://js-eight-sage.vercel.app/" data-img="assets/projetos/projeto-js.webp"
+            aria-label="Ver detalhes do Projeto 02: Projeto JS — Frases de Cinema">
+            <div class="cd-proj-item__inner">
+              <span class="cd-proj-item__num">02</span>
+              <div class="cd-proj-item__info">
+                <h3 class="cd-proj-item__name">Projeto JS — <em>Frases de Cinema</em></h3>
+                <p class="cd-proj-item__desc">DOM API · Manipulação de texto · Console interativo</p>
+              </div>
+              <div class="cd-proj-item__tags">
+                <span>JS</span><span>DOM</span><span>CSS3</span>
+              </div>
+              <span class="cd-proj-item__cta" aria-hidden="true">↗</span>
+            </div>
+          </article>
+
+          <article class="cd-proj-item hoverable" role="listitem" tabindex="0" data-index="2" data-slug="aespa"
+            data-url="https://helenamaria09.github.io/aespamembers/" data-img="assets/projetos/aespa.webp"
+            aria-label="Ver detalhes do Projeto 03: AESPA Members">
+            <div class="cd-proj-item__inner">
+              <span class="cd-proj-item__num">03</span>
+              <div class="cd-proj-item__info">
+                <h3 class="cd-proj-item__name">AESPA <em>Members</em></h3>
+                <p class="cd-proj-item__desc">Fan portal Y2K · Perfis · Spotify embed</p>
+              </div>
+              <div class="cd-proj-item__tags">
+                <span>HTML</span><span>CSS</span><span>JS</span>
+              </div>
+              <span class="cd-proj-item__cta" aria-hidden="true">↗</span>
+            </div>
+          </article>
+
+          <article class="cd-proj-item hoverable" role="listitem" tabindex="0" data-index="3" data-slug="diario"
+            data-url="https://diario-opal.vercel.app/" data-img="assets/projetos/diario.webp"
+            aria-label="Ver detalhes do Projeto 04: O Diário Secreto">
+            <div class="cd-proj-item__inner">
+              <span class="cd-proj-item__num">04</span>
+              <div class="cd-proj-item__info">
+                <h3 class="cd-proj-item__name">O Diário <em>Secreto</em></h3>
+                <p class="cd-proj-item__desc">Scrapbook digital · CSS 3D · Natação & Ballet</p>
+              </div>
+              <div class="cd-proj-item__tags">
+                <span>CSS 3D</span><span>JS</span>
+              </div>
+              <span class="cd-proj-item__cta" aria-hidden="true">↗</span>
+            </div>
+          </article>
+
+          <article class="cd-proj-item hoverable" role="listitem" tabindex="0" data-index="4" data-slug="goty"
+            data-url="https://helenamaria09.github.io/goty--academia/" data-img="assets/projetos/goty.webp"
+            aria-label="Ver detalhes do Projeto 05: GOTY Academia">
+            <div class="cd-proj-item__inner">
+              <span class="cd-proj-item__num">05</span>
+              <div class="cd-proj-item__info">
+                <h3 class="cd-proj-item__name">GOTY <em>Academia</em></h3>
+                <p class="cd-proj-item__desc">Site fitness · Catálogo · Mapa de unidades</p>
+              </div>
+              <div class="cd-proj-item__tags">
+                <span>HTML</span><span>CSS</span><span>JS</span>
+              </div>
+              <span class="cd-proj-item__cta" aria-hidden="true">↗</span>
+            </div>
+          </article>
+
+          <article class="cd-proj-item hoverable" role="listitem" tabindex="0" data-index="5" data-slug="cat-cafe"
+            data-url="https://jogo-1-three.vercel.app/" data-img="assets/projetos/cat-cafe.webp"
+            aria-label="Ver detalhes do Projeto 06: Cat Café Tycoon">
+            <div class="cd-proj-item__inner">
+              <span class="cd-proj-item__num">06</span>
+              <div class="cd-proj-item__info">
+                <h3 class="cd-proj-item__name">Cat Café <em>Tycoon</em></h3>
+                <p class="cd-proj-item__desc">Jogo 3D WebGL · Three.js · Modo Hora do Fuzuê</p>
+              </div>
+              <div class="cd-proj-item__tags">
+                <span>Three.js</span><span>WebGL</span><span>JS</span>
+              </div>
+              <span class="cd-proj-item__cta" aria-hidden="true">↗</span>
+            </div>
+          </article>
+
+        </div><!-- /cd-proj-list -->
+
+        <!-- PREVIEW FLUTUANTE QUE SEGUE O CURSOR (DESKTOP) -->
+        <div class="cd-proj-floating" id="cdProjFloating" aria-hidden="true">
+          <div class="cd-proj-floating__card">
+            <div class="cd-proj-floating__media">
+              <img class="cd-proj-floating__img" id="cdProjFloatingImg" src="" alt="" loading="lazy" />
+              <div class="cd-proj-floating__fallback" id="cdProjFloatingFallback">
+                <div class="cd-proj-floating__fallback-badge">CHROME DREAMS</div>
+                <span class="cd-proj-floating__fallback-title" id="cdProjFloatingFallbackTitle">Briar U Hockey</span>
+                <span class="cd-proj-floating__fallback-tech" id="cdProjFloatingFallbackTech">Canvas 2D · Física</span>
+              </div>
+            </div>
+            <div class="cd-proj-floating__glimmer"></div>
+            <div class="cd-proj-floating__footer">
+              <span class="cd-proj-floating__num" id="cdProjFloatingNum">01</span>
+              <span class="cd-proj-floating__hint">CLIQUE PARA EXPANDIR ↗</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAINEL EXPANDIDO (OVERLAY DENTRO DA CENA) -->
+        <div class="cd-proj-modal" id="cdProjModal" role="dialog" aria-modal="true" aria-hidden="true"
+          aria-labelledby="cdModalTitle" hidden>
+          <div class="cd-proj-modal__backdrop" id="cdModalBackdrop"></div>
+          <div class="cd-proj-modal__dialog" id="cdModalDialog" tabindex="-1">
+            <button class="cd-proj-modal__close hoverable" id="cdModalClose"
+              aria-label="Fechar painel de detalhes (Esc)">✕</button>
+
+            <div class="cd-proj-modal__layout">
+              <!-- Mídia Visual / Imagem Grande -->
+              <div class="cd-proj-modal__visual">
+                <div class="cd-proj-modal__img-container" id="cdModalImgContainer">
+                  <img class="cd-proj-modal__img" id="cdModalImg" src="" alt="" loading="lazy" />
+                  <div class="cd-proj-modal__fallback" id="cdModalFallback">
+                    <div class="cd-proj-modal__fallback-chrome"></div>
+                    <div class="cd-proj-modal__fallback-badge">[ PROJETO SELECIONADO ]</div>
+                    <span class="cd-proj-modal__fallback-name" id="cdModalFallbackName">Briar U Hockey</span>
+                    <span class="cd-proj-modal__fallback-sub">CHROME DREAMS // GALERIA EXPERIMENTAL</span>
+                  </div>
+                  <div class="cd-proj-modal__glimmer" aria-hidden="true"></div>
+                </div>
+
+                <!-- Controles de Navegação Dentro do Painel -->
+                <div class="cd-proj-modal__nav">
+                  <button class="cd-proj-modal__nav-btn cd-proj-modal__nav-btn--prev hoverable" id="cdModalBtnPrev"
+                    aria-label="Projeto anterior (Seta esquerda)">
+                    <span class="cd-proj-modal__nav-arrow">←</span>
+                    <span class="cd-proj-modal__nav-label">ANTERIOR</span>
+                  </button>
+                  <span class="cd-proj-modal__counter" id="cdModalCounter">01 // 06</span>
+                  <button class="cd-proj-modal__nav-btn cd-proj-modal__nav-btn--next hoverable" id="cdModalBtnNext"
+                    aria-label="Próximo projeto (Seta direita)">
+                    <span class="cd-proj-modal__nav-label">PRÓXIMO</span>
+                    <span class="cd-proj-modal__nav-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Informações Editoriais do Projeto -->
+              <div class="cd-proj-modal__details">
+                <div class="cd-proj-modal__meta" id="cdModalMeta">[ PROJETO 01 // 06 ]</div>
+                <h3 class="cd-proj-modal__title" id="cdModalTitle">Briar U <em>Hockey</em></h3>
+                <div class="cd-proj-modal__tags" id="cdModalTags" aria-label="Tecnologias utilizadas"></div>
+                <p class="cd-proj-modal__desc" id="cdModalDesc"></p>
+
+                <div class="cd-proj-modal__challenge-box">
+                  <span class="cd-proj-modal__challenge-tag">DESAFIO & APRENDIZADO</span>
+                  <p class="cd-proj-modal__challenge-text" id="cdModalChallenge"></p>
+                </div>
+
+                <div class="cd-proj-modal__footer">
+                  <a href="" target="_blank" rel="noopener noreferrer" class="cd-btn-proj cd-proj-modal__cta hoverable"
+                    id="cdModalCta" aria-label="Abrir projeto em nova aba">
+                    ABRIR PROJETO ↗
+                  </a>
+                  <span class="cd-proj-modal__tip" aria-hidden="true">ESC ou clique fora fecha · ← → navega</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENA 05 - HABILIDADES -->
+    <section class="cd-scene cd-scene--05" id="cd-scene-05" data-scene="5" data-scene-name="HABILIDADES"
+      aria-label="Cena 05: Habilidades" role="tabpanel" aria-hidden="true">
+      <div class="cd-skills">
+        <span class="cd-panel__meta" aria-hidden="true">[ CENA 05 // NÚCLEO TÉCNICO ]</span>
+        <h2 class="cd-panel__title">HABILIDADES</h2>
+        <p class="cd-skills__lead">
+          Tecnologias que compõem meu aprendizado técnico no Colégio Raphael Di Santo e em projetos autorais:
+        </p>
+        <div class="cd-skills__grid">
+          <div class="cd-skill" tabindex="0" aria-label="HTML5">
+            <span class="cd-skill__num" aria-hidden="true">01</span>
+            <strong class="cd-skill__name">HTML5</strong>
+            <p class="cd-skill__desc">Estruturação semântica, acessibilidade e boas práticas de marcação.</p>
+          </div>
+          <div class="cd-skill" tabindex="0" aria-label="CSS3">
+            <span class="cd-skill__num" aria-hidden="true">02</span>
+            <strong class="cd-skill__name">CSS3</strong>
+            <p class="cd-skill__desc">Layouts com Grid e Flexbox, transformações 3D e animações refinadas.</p>
+          </div>
+          <div class="cd-skill" tabindex="0" aria-label="JavaScript ES6+">
+            <span class="cd-skill__num" aria-hidden="true">03</span>
+            <strong class="cd-skill__name">JavaScript ES6+</strong>
+            <p class="cd-skill__desc">Manipulação do DOM, APIs modernas, lógica e Canvas 2D.</p>
+          </div>
+          <div class="cd-skill" tabindex="0" aria-label="Python">
+            <span class="cd-skill__num" aria-hidden="true">04</span>
+            <strong class="cd-skill__name">Python</strong>
+            <p class="cd-skill__desc">Automação de scripts, estruturas de dados e análise computacional.</p>
+          </div>
+          <div class="cd-skill" tabindex="0" aria-label="Lógica de Programação">
+            <span class="cd-skill__num" aria-hidden="true">05</span>
+            <strong class="cd-skill__name">Lógica de Programação</strong>
+            <p class="cd-skill__desc">Algoritmos, resolução estruturada de problemas e fluxo de dados.</p>
+          </div>
+          <div class="cd-skill" tabindex="0" aria-label="Web Scraping">
+            <span class="cd-skill__num" aria-hidden="true">06</span>
+            <strong class="cd-skill__name">Web Scraping</strong>
+            <p class="cd-skill__desc">Extração de dados públicos para investigação e visualização.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENA 06 - VISÃO -->
+    <section class="cd-scene cd-scene--06" id="cd-scene-06" data-scene="6" data-scene-name="TECNOLOGIA & JORNALISMO"
+      aria-label="Cena 06: Tecnologia e Jornalismo" role="tabpanel" aria-hidden="true">
+      <div class="cd-vision">
+        <div class="cd-vision__watermark" aria-hidden="true">TECNOLOGIA JORNALISMO DADOS</div>
+        <span class="cd-panel__meta" aria-hidden="true">[ CENA 06 // VISÃO DE FUTURO ]</span>
+        <h2 class="cd-panel__title">TECNOLOGIA<br><em>E JORNALISMO</em></h2>
+        <blockquote class="cd-vision__quote">
+          "Além da programação, tenho grande interesse pelo Jornalismo e pela maneira como a tecnologia transforma
+          a comunicação humana. Minha meta é unir essas duas áreas, explorando plataformas informativas de alto impacto,
+          checagem automatizada de fatos, análise de dados e ferramentas digitais para investigação e combate à
+          desinformação."
+        </blockquote>
+        <cite class="cd-vision__cite">Maria Helena, 2026</cite>
+        <div class="cd-vision__triad">
+          <div class="cd-triad-item" tabindex="0">
+            <span class="cd-triad-item__num" aria-hidden="true">01</span>
+            <h3>Plataformas de Notícias</h3>
+            <p>Interfaces limpas, acessíveis e focadas em legibilidade e experiência do leitor.</p>
+          </div>
+          <div class="cd-triad-item" tabindex="0">
+            <span class="cd-triad-item__num" aria-hidden="true">02</span>
+            <h3>Checagem de Fatos</h3>
+            <p>Ferramentas automatizadas para combate à desinformação em tempo real.</p>
+          </div>
+          <div class="cd-triad-item" tabindex="0">
+            <span class="cd-triad-item__num" aria-hidden="true">03</span>
+            <h3>Jornalismo de Dados</h3>
+            <p>Mineração de bases públicas, auditoria e gráficos interativos para revelar histórias.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENA 07 - EDUCAÇÃO & INTERESSES -->
+    <section class="cd-scene cd-scene--07" id="cd-scene-07" data-scene="7" data-scene-name="EDUCAÇÃO & INTERESSES"
+      aria-label="Cena 07: Educação e Interesses" role="tabpanel" aria-hidden="true">
+      <div class="cd-edu">
+        <span class="cd-panel__meta" aria-hidden="true">[ CENA 07 // FORMAÇÃO E UNIVERSO PESSOAL ]</span>
+        <h2 class="cd-panel__title">EDUCAÇÃO<br><em>&amp; INTERESSES</em></h2>
+        <div class="cd-timeline" role="list" aria-label="Linha do tempo educacional">
+          <div class="cd-timeline__event" role="listitem" tabindex="0">
+            <span class="cd-timeline__year" aria-label="Ano 2025">2025</span>
+            <div class="cd-timeline__details">
+              <strong>INÍCIO DA JORNADA</strong>
+              <p>Ingresso no Colégio Raphael Di Santo (Campinas/SP) no Ensino Médio integrado ao Curso Técnico em
+                Informática.</p>
+            </div>
+          </div>
+          <div class="cd-timeline__event cd-timeline__event--active" role="listitem" tabindex="0">
+            <span class="cd-timeline__year" aria-label="Ano 2026, ano atual">2026</span>
+            <div class="cd-timeline__details">
+              <strong>ATUALMENTE — 2º ANO</strong>
+              <p>Aprofundamento em desenvolvimento web criativo, lógica de software, interfaces e exploração de dados.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="cd-langs" aria-label="Idiomas">
+          <div class="cd-lang">
+            <span class="cd-lang__flag" aria-hidden="true">BR</span>
+            <span class="cd-lang__name">Português</span>
+            <span class="cd-lang__level">Nativo</span>
+          </div>
+          <div class="cd-lang">
+            <span class="cd-lang__flag" aria-hidden="true">EN</span>
+            <span class="cd-lang__name">Inglês</span>
+            <span class="cd-lang__level">Fluente</span>
+          </div>
+          <div class="cd-lang">
+            <span class="cd-lang__flag" aria-hidden="true">ES</span>
+            <span class="cd-lang__name">Espanhol</span>
+            <span class="cd-lang__level">Básico</span>
+          </div>
+        </div>
+        <div class="cd-interests" aria-label="Interesses pessoais">
+          <article class="cd-interest cd-interest--water" tabindex="0" aria-label="Interesse: Natação">
+            <div class="cd-interest__bg" aria-hidden="true"></div>
+            <div class="cd-interest__icon" aria-hidden="true">
+              <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+                <path d="M4 32 Q12 26 20 32 Q28 38 36 32 Q44 26 44 32" stroke="#70C8FF" stroke-width="2.5" fill="none"
+                  stroke-linecap="round" />
+                <path d="M4 38 Q12 32 20 38 Q28 44 36 38 Q44 32 44 38" stroke="#B9A8DC" stroke-width="1.5" fill="none"
+                  stroke-linecap="round" opacity="0.6" />
+                <circle cx="24" cy="20" r="8" fill="none" stroke="#D9D9E3" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="cd-interest__body">
+              <span class="cd-interest__tag">ÁGUA · RESISTÊNCIA · DISCIPLINA</span>
+              <h3>Natação</h3>
+              <p>Foco, respiração compassada e disciplina individual a cada treino na piscina.</p>
+            </div>
+          </article>
+          <article class="cd-interest cd-interest--ballet" tabindex="0" aria-label="Interesse: Ballet">
+            <div class="cd-interest__bg" aria-hidden="true"></div>
+            <div class="cd-interest__icon" aria-hidden="true">
+              <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+                <path d="M24 8 C24 8 18 18 18 28 C18 35 21 40 24 42 C27 40 30 35 30 28 C30 18 24 8 24 8Z"
+                  stroke="#F3B6CB" stroke-width="1.5" fill="none" />
+                <path d="M12 22 Q24 16 36 22" stroke="#F3B6CB" stroke-width="2" fill="none" stroke-linecap="round" />
+                <path d="M8 34 L20 28 M28 28 L40 34" stroke="#B9A8DC" stroke-width="1.5" fill="none"
+                  stroke-linecap="round" opacity="0.7" />
+              </svg>
+            </div>
+            <div class="cd-interest__body">
+              <span class="cd-interest__tag">ARTE · ELEGÂNCIA · RITMO</span>
+              <h3>Ballet</h3>
+              <p>Danço desde pequena; prática que ensina dedicação estética, ritmo e postura expressiva.</p>
+            </div>
+          </article>
+          <article class="cd-interest cd-interest--cinema" tabindex="0" aria-label="Interesse: Filmes e Séries">
+            <div class="cd-interest__bg" aria-hidden="true"></div>
+            <div class="cd-interest__icon" aria-hidden="true">
+              <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+                <rect x="6" y="12" width="36" height="26" rx="2" stroke="#9D91B8" stroke-width="1.5" fill="none" />
+                <circle cx="12" cy="12" r="3" fill="#F3B6CB" />
+                <circle cx="36" cy="12" r="3" fill="#F3B6CB" />
+                <circle cx="12" cy="38" r="3" fill="#B9A8DC" />
+                <circle cx="36" cy="38" r="3" fill="#B9A8DC" />
+                <polygon points="19,19 19,31 33,25" fill="#D9D9E3" />
+              </svg>
+            </div>
+            <div class="cd-interest__body">
+              <span class="cd-interest__tag">CINEMA · NARRATIVA · MUNDOS</span>
+              <h3>Filmes &amp; Séries</h3>
+              <p>Paixão por universos imersivos e narrativas complexas, como Alice in Borderland e Avatar.</p>
+            </div>
+          </article>
+          <article class="cd-interest cd-interest--music" tabindex="0" aria-label="Interesse: Música">
+            <div class="cd-interest__bg" aria-hidden="true"></div>
+            <div class="cd-interest__icon" aria-hidden="true">
+              <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+                <circle cx="14" cy="34" r="6" stroke="#F3B6CB" stroke-width="1.8" fill="none" />
+                <circle cx="34" cy="28" r="6" stroke="#B9A8DC" stroke-width="1.8" fill="none" />
+                <path d="M20 34V14L40 8V28" stroke="#D9D9E3" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M20 20L40 14" stroke="#F3B6CB" stroke-width="1.5" />
+              </svg>
+            </div>
+            <div class="cd-interest__body">
+              <span class="cd-interest__tag">SOM · RITMO · IDENTIDADE</span>
+              <h3>Música</h3>
+              <p>Amor por música: fã apaixonada de <em>Stray Kids</em> (meu grupo favorito!), além de Beyoncé, Adéla,
+                Charli XCX e mais.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENA 08 - CONTATO -->
+    <section class="cd-scene cd-scene--08" id="cd-scene-08" data-scene="8" data-scene-name="CONTATO"
+      aria-label="Cena 08: Contato e Encerramento" role="tabpanel" aria-hidden="true">
+      <div class="cd-contact">
+        <div class="cd-contact__header">
+          <span class="cd-panel__meta" aria-hidden="true">[ CENA 08 // ENCERRAMENTO ]</span>
+          <h2 class="cd-contact__title">LET'S CREATE<br><em>SOMETHING.</em></h2>
+          <p class="cd-contact__thanks">"Obrigada por explorar meu universo digital."</p>
+        </div>
+        <div class="cd-contact__body">
+          <div class="cd-contact__form-wrap">
+            <form class="cd-form" id="cdContactForm" novalidate>
+              <div class="cd-form__row">
+                <label for="cdName" class="cd-form__label">SEU NOME</label>
+                <input type="text" id="cdName" name="name" class="cd-form__input" placeholder="Ex: Ana Silva" required
+                  autocomplete="name">
+              </div>
+              <div class="cd-form__row">
+                <label for="cdEmail" class="cd-form__label">SEU E-MAIL</label>
+                <input type="email" id="cdEmail" name="email" class="cd-form__input" placeholder="Ex: ana@exemplo.com"
+                  required autocomplete="email">
+              </div>
+              <div class="cd-form__row">
+                <label for="cdMessage" class="cd-form__label">MENSAGEM</label>
+                <textarea id="cdMessage" name="message" class="cd-form__input cd-form__textarea" rows="4"
+                  placeholder="Escreva sua mensagem..." required></textarea>
+              </div>
+              <div class="cd-form__actions">
+                <button type="submit" class="cd-btn-submit" aria-label="Enviar mensagem por e-mail">
+                  ENVIAR E-MAIL
+                </button>
+                <button type="button" class="cd-btn-copy" id="cdBtnCopyEmail" aria-label="Copiar endereço de e-mail">
+                  <span id="cdCopyText">Copiar E-mail</span>
+                </button>
+              </div>
+              <div class="cd-form__note" id="cdFormNote" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span>Abrindo seu cliente de e-mail com a mensagem formatada...</span>
+              </div>
+            </form>
+          </div>
+          <div class="cd-contact__channels">
+            <h3 class="cd-contact__channels-title">CONTATOS CONFIRMADOS</h3>
+            <a href="mailto:tecmariahelenasilva@gmail.com" class="cd-channel">
+              <span class="cd-channel__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="M22 4L12 13L2 4" />
+                </svg>
+              </span>
+              <div class="cd-channel__text">
+                <small>E-MAIL</small>
+                <span>tecmariahelenasilva@gmail.com</span>
+              </div>
+            </a>
+            <a href="https://github.com/helenamaria09" target="_blank" rel="noopener noreferrer" class="cd-channel">
+              <span class="cd-channel__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                </svg>
+              </span>
+              <div class="cd-channel__text">
+                <small>GITHUB</small>
+                <span>github.com/helenamaria09</span>
+              </div>
+            </a>
+            <div class="cd-channel cd-channel--static">
+              <span class="cd-channel__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </span>
+              <div class="cd-channel__text">
+                <small>LOCALIZAÇÃO</small>
+                <span>Campinas, São Paulo — Brasil</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cd-contact__legal">
+          <span>MARIA HELENA · COLÉGIO RAPHAEL DI SANTO · 2026</span>
+          <span>THREE.JS WEBGL · GSAP MOTION · VANILLA JS · CSS3</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BIBLIOTECAS EXTERNAS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <!-- Lenis — Smooth Scroll com inércia orgânica -->
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>
